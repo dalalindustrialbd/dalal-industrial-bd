@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel | Dalal Industrial Limited BD</title>
+    <script src="https://jsdelivr.net"></script>
+    <style>
+        body { background: #0f172a; color: #f8fafc; font-family: sans-serif; padding: 20px; }
+        .box { max-width: 900px; margin: 20px auto; background: #1e293b; padding: 20px; border-radius: 8px; }
+        input { width: 100%; padding: 10px; margin: 8px 0; border-radius: 5px; border: 1px solid #334155; background: #0f172a; color: #fff; }
+        button { padding: 10px 16px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        .btn-login { background: #3b82f6; color: #fff; width: 100%; }
+        .btn-approve { background: #10b981; color: #000; margin-right: 8px; }
+        .btn-delete { background: #ef4444; color: #fff; }
+        .item { border: 1px solid #334155; padding: 15px; border-radius: 6px; margin-bottom: 15px; background: #0f172a; }
+        .secret { background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; padding: 10px; border-radius: 5px; margin: 10px 0; color: #fcd34d; }
+    </style>
+</head>
+<body>
+
+<div class="box" id="loginBox" style="max-width:400px;">
+    <h2>🔒 অ্যাডমিন লগইন</h2>
+    <input type="email" id="email" placeholder="অ্যাডমিন ইমেইল">
+    <input type="password" id="password" placeholder="পাসওয়ার্ড">
+    <button class="btn-login" onclick="login()">লগইন করুন</button>
+</div>
+
+<div class="box" id="dashboardBox" style="display:none;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h2>অ্যাডমিন কন্ট্রোল প্যানেল</h2>
+        <button onclick="logout()" style="background:#64748b; color:#fff;">লগআউট</button>
+    </div>
+    <hr style="border-color:#334155; margin:15px 0;">
+    <div id="pendingList">লোড হচ্ছে...</div>
+</div>
+
+<script>
+    const SUPABASE_URL = 'https://supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_BMSEoBr3WjS2VjDIe3qiwg_bTodWou4';
+    const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    async function checkUser() {
+        const { data: { session } } = await sb.auth.getSession();
+        if (session) {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('dashboardBox').style.display = 'block';
+            loadAllData();
+        }
+    }
+
+    async function login() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) alert('লগইন ব্যর্থ: ' + error.message);
+        else checkUser();
+    }
+
+    async function logout() {
+        await sb.auth.signOut();
+        location.reload();
+    }
+
+    async function loadAllData() {
+        const { data: complaints } = await sb.from('complaints').select('*, dalals(*)').order('created_at', { ascending: false });
+        const list = document.getElementById('pendingList');
+        if (!complaints || complaints.length === 0) {
+            list.innerHTML = '<p>কোনো অভিযোগ পাওয়া যায়নি।</p>';
+            return;
+        }
+        list.innerHTML = complaints.map(c => {
+            const d = c.dalals || {};
+            return `
+            <div class="item">
+                <h3>দালালের নাম: ${d.name || 'অজানা'} (${d.is_approved ? '✅ লাইভ আছে' : '⏳ পেন্ডিং'})</h3>
+                <p><strong>ঠিকানা:</strong> ${d.village || ''}, ${d.moholla || ''}, থানা: ${d.thana}, জেলা: ${d.district} | <strong>বংশ:</strong> ${d.bongsho || '-'}</p>
+                <p><strong>অভিযোগের বিবরণ:</strong> ${c.description}</p>
+                <div class="secret">
+                    <strong>🕵️ অভিযোগকারীর গোপন তথ্য (শুধু আপনি দেখছেন):</strong><br>
+                    নাম: ${c.complainant_name} | জেলা: ${c.complainant_district} | থানা: ${c.complainant_thana} | গ্রাম: ${c.complainant_village}
+                </div>
+                ${!d.is_approved ? `<button class="btn-approve" onclick="approveDalal('${d.id}')">Approve (ওয়েবসাইটে দেখান)</button>` : ''}
+                <button class="btn-delete" onclick="deleteDalal('${d.id}')">Delete (মুছে ফেলুন)</button>
+            </div>`;
+        }).join('');
+    }
+
+    async function approveDalal(id) {
+        await sb.from('dalals').update({ is_approved: true }).eq('id', id);
+        alert('অনুমোদিত হয়েছে! এখন এটি মূল ওয়েবসাইটে দেখা যাবে।');
+        loadAllData();
+    }
+
+    async function deleteDalal(id) {
+        if (confirm('আপনি কি নিশ্চিতভাবে এটি মুছে ফেলতে চান?')) {
+            await sb.from('dalals').delete().eq('id', id);
+            loadAllData();
+        }
+    }
+
+    checkUser();
+</script>
+</body>
+</html>
