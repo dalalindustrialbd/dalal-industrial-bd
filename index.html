@@ -116,31 +116,31 @@
 
 <header>
     <div class="logo">Dalal Industrial <span>Limited BD</span></div>
-    <button class="btn-report" onclick="openModal()">+ গোপন অভিযোগ জমা দিন</button>
+    <button type="button" class="btn-report" onclick="openModal()">+ গোপন অভিযোগ জমা দিন</button>
 </header>
 
 <div class="container">
     <div class="stats-bar">
         <div class="stat-card">
             <h4>মোট চিহ্নিত দালাল</h4>
-            <p id="totalDalals">লোড হচ্ছে...</p>
+            <p id="totalDalals">০ জন</p>
         </div>
         <div class="stat-card" style="border-left-color: var(--red);">
             <h4>সবচেয়ে বেশি দালাল (জেলা)</h4>
-            <p id="topDistrict">হিসাব হচ্ছে...</p>
+            <p id="topDistrict">তথ্য নেই</p>
         </div>
         <div class="stat-card" style="border-left-color: var(--blue);">
             <h4>সবচেয়ে বেশি দালাল (থানা)</h4>
-            <p id="topThana">হিসাব হচ্ছে...</p>
+            <p id="topThana">তথ্য নেই</p>
         </div>
     </div>
 
     <div class="tabs">
-        <button class="tab active" onclick="filterCategory('all', this)">সকল দালাল</button>
-        <button class="tab" onclick="filterCategory('desher_sotru', this)">🚨 দেশের ও সার্বভৌমত্বের শত্রু</button>
-        <button class="tab" onclick="filterCategory('probashi', this)">✈️ প্রবাসীদের দালাল</button>
-        <button class="tab" onclick="filterCategory('jomi', this)">🏞️ জায়গা-জমি ও ভূমি দালাল</button>
-        <button class="tab" onclick="filterCategory('elakar_sotru', this)">🏘️ এলাকার শত্রু ও স্থানীয় দালাল</button>
+        <button type="button" class="tab active" onclick="filterCategory('all', this)">সকল দালাল</button>
+        <button type="button" class="tab" onclick="filterCategory('desher_sotru', this)">🚨 দেশের ও সার্বভৌমত্বের শত্রু</button>
+        <button type="button" class="tab" onclick="filterCategory('probashi', this)">✈️ প্রবাসীদের দালাল</button>
+        <button type="button" class="tab" onclick="filterCategory('jomi', this)">🏞️ জায়গা-জমি ও ভূমি দালাল</button>
+        <button type="button" class="tab" onclick="filterCategory('elakar_sotru', this)">🏘️ এলাকার শত্রু ও স্থানীয় দালাল</button>
     </div>
 
     <div class="search-box">
@@ -148,7 +148,7 @@
     </div>
 
     <div class="grid" id="dalalList">
-        <p>তথ্য লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+        <p style="color:#94a3b8;">তথ্য লোড হচ্ছে...</p>
     </div>
 </div>
 
@@ -156,7 +156,7 @@
     <div class="modal-content">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2>নতুন দালাল সম্পর্কে অভিযোগ</h2>
-            <button onclick="closeModal()" style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <button type="button" onclick="closeModal()" style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
         </div>
 
         <div class="privacy-note">
@@ -196,6 +196,3 @@
                 </div>
                 <div class="form-group">
                     <label>দালালের জেলা *</label>
-                    <input type="text" id="d_district" required placeholder="জেলার নাম">
-                </div>
-                <div class="form-group">
