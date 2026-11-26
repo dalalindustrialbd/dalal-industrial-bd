@@ -1,123 +1,152 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dalal Site BD | দালাল ও প্রতারক নজরদারি পোর্টাল</title>
-    <style>
-        :root { --bg:#070b14; --card:#111827; --border:#1f2937; --text:#f8fafc; --muted:#94a3b8; --red:#ef4444; --gold:#f59e0b; --blue:#3b82f6; --green:#10b981; }
-        * { box-sizing:border-box; margin:0; padding:0; font-family:'Segoe UI',Tahoma,sans-serif; }
-        body { background:var(--bg); color:var(--text); line-height:1.6; }
-        .ticker { background:#7f1d1d; color:#fff; font-size:0.85rem; padding:6px 5%; display:flex; align-items:center; gap:10px; }
-        .ticker span { background:#fff; color:#7f1d1d; font-weight:bold; padding:2px 8px; border-radius:4px; font-size:0.75rem; }
-        header { background:var(--card); border-bottom:2px solid var(--red); padding:1rem 5%; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
-        .logo { font-size:1.5rem; font-weight:900; }
-        .logo span { color:var(--red); }
-        .btn-report { background:var(--red); color:#fff; border:none; padding:11px 20px; border-radius:8px; font-weight:bold; cursor:pointer; font-size:0.95rem; }
-        .btn-report:hover { background:#dc2626; }
-        .hero { background:linear-gradient(180deg, #1e1b4b 0%, var(--bg) 100%); padding:2rem 5%; text-align:center; border-bottom:1px solid var(--border); }
-        .hero h1 { font-size:1.7rem; margin-bottom:0.5rem; }
-        .hero p { color:var(--muted); max-width:700px; margin:0 auto; font-size:0.92rem; }
-        .container { max-width:1200px; margin:1.5rem auto; padding:0 4%; }
-        .stats { display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:1rem; margin-bottom:1.5rem; }
-        .stat-card { background:var(--card); border:1px solid var(--border); padding:1rem; border-radius:10px; border-top:3px solid var(--gold); }
-        .stat-card h4 { color:var(--muted); font-size:0.82rem; }
-        .stat-card p { font-size:1.3rem; font-weight:800; margin-top:4px; }
-        .filter-box { background:var(--card); border:1px solid var(--border); padding:1rem; border-radius:10px; margin-bottom:1.5rem; }
-        .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:1rem; }
-        .tab { background:var(--bg); color:var(--text); border:1px solid var(--border); padding:7px 14px; border-radius:20px; cursor:pointer; font-size:0.85rem; }
-        .tab.active { background:var(--red); border-color:var(--red); font-weight:bold; }
-        .search-row { display:flex; gap:10px; flex-wrap:wrap; }
-        .search-row input, .search-row select { flex:1; min-width:200px; padding:10px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:#fff; }
-        .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(310px, 1fr)); gap:1.2rem; }
-        .dalal-card { background:var(--card); border:1px solid var(--border); border-radius:10px; overflow:hidden; display:flex; flex-direction:column; }
-        .dalal-card.p-desh { border:1.5px solid var(--red); }
-        .dalal-card.p-probashi { border:1.5px solid var(--gold); }
-        .card-top { display:flex; gap:12px; padding:1rem; align-items:center; border-bottom:1px solid var(--border); }
-        .dalal-img { width:70px; height:70px; border-radius:8px; object-fit:cover; background:#1e293b; }
-        .badge { display:inline-block; font-size:0.75rem; padding:2px 8px; border-radius:4px; font-weight:bold; margin-bottom:4px; }
-        .b-desher_sotru { background:rgba(239,68,68,0.2); color:#f87171; }
-        .b-probashi { background:rgba(245,158,11,0.2); color:#fbbf24; }
-        .b-jomi { background:rgba(59,130,246,0.2); color:#60a5fa; }
-        .b-elakar_sotru { background:rgba(148,163,184,0.2); color:#cbd5e1; }
-        .count-badge { background:var(--red); color:#fff; font-size:0.75rem; padding:2px 8px; border-radius:10px; font-weight:bold; display:inline-block; margin-top:4px; }
-        .card-body { padding:1rem; font-size:0.88rem; color:var(--muted); flex:1; }
-        .card-body strong { color:var(--text); }
-        .card-foot { padding:0.7rem 1rem; background:rgba(0,0,0,0.2); border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
-        .btn-det { background:transparent; color:var(--gold); border:1px solid var(--gold); padding:5px 10px; border-radius:5px; cursor:pointer; font-size:0.82rem; font-weight:bold; }
-        .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.88); z-index:999; overflow-y:auto; padding:15px; }
-        .modal-box { background:var(--card); max-width:640px; margin:20px auto; padding:1.5rem; border-radius:10px; border:1px solid var(--border); }
-        .sec-title { color:var(--gold); font-size:0.95rem; margin:1rem 0 0.5rem 0; border-bottom:1px solid var(--border); padding-bottom:4px; }
-        .priv-note { background:rgba(16,185,129,0.15); border:1px solid var(--green); color:#6ee7b7; padding:10px; border-radius:6px; font-size:0.83rem; margin-bottom:1rem; }
-        .f-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-        .f-grp { margin-bottom:8px; }
-        .f-grp label { display:block; font-size:0.82rem; margin-bottom:3px; color:var(--muted); }
-        .f-grp input, .f-grp select, .f-grp textarea { width:100%; padding:9px; border-radius:6px; border:1px solid var(--border); background:var(--bg); color:#fff; font-size:0.9rem; }
-        .btn-sub { width:100%; background:var(--green); color:#000; font-weight:bold; padding:12px; border:none; border-radius:6px; cursor:pointer; font-size:1rem; margin-top:10px; }
-        footer { background:var(--card); border-top:1px solid var(--border); margin-top:3rem; padding:2rem 5%; text-align:center; color:var(--muted); font-size:0.85rem; }
-        @media(max-width:600px){ .f-grid{grid-template-columns:1fr;} }
-    </style>
-</head>
-<body>
+<script>
+    const SB_URL = 'https://supabase.co';
+    const SB_KEY = 'sb_publishable_BMSEoBr3WjS2VjDIe3qiwg_bTodWou4';
+    let listData = [];
+    let activeCat = 'all';
+    const catMap = { 'desher_sotru':'🚨 দেশের ও সার্বভৌমত্বের শত্রু', 'probashi':'✈️ প্রবাসীদের দালাল', 'jomi':'🏞️ জায়গা-জমি দালাল', 'elakar_sotru':'🏘️ এলাকার শত্রু' };
+    const pOrder = { 'desher_sotru':1, 'probashi':2, 'jomi':3, 'elakar_sotru':4 };
 
-<div class="ticker">
-    <span>সতর্কবার্তা</span>
-    <marquee scrollamount="5">দেশের সার্বভৌমত্ব, প্রবাসী রেমিট্যান্স যোদ্ধা এবং সাধারণ মানুষের জমি-সম্পদ রক্ষায় দালাল ও প্রতারকদের চিহ্নিত করুন। অভিযোগকারীর পরিচয় ১০০% গোপন রাখা হয়।</marquee>
-</div>
+    async function init() {
+        try {
+            const r = await fetch(SB_URL + '/rest/v1/dalals?is_approved=eq.true&select=*', {
+                headers: { 'apikey': SB_KEY, 'Authorization': 'Bearer ' + SB_KEY }
+            });
+            const d = await r.json();
+            listData = Array.isArray(d) ? d.sort((a,b) => (pOrder[a.category]||5) - (pOrder[b.category]||5)) : [];
+            updateStats();
+            renderList();
+        } catch(e) {
+            document.getElementById('dalalList').innerHTML = '<p style="color:#94a3b8;">তথ্য পাওয়া যায়নি।</p>';
+        }
+    }
 
-<header>
-    <div>
-        <div class="logo">Dalal Site <span>BD</span></div>
-        <div style="font-size:0.75rem; color:#94a3b8;">dalalsitebd.eu.org | জনস্বার্থে দালাল ও প্রতারক নজরদারি পোর্টাল</div>
-    </div>
-    <button type="button" class="btn-report" onclick="document.getElementById('reportModal').style.display='block'">+ গোপন অভিযোগ জমা দিন</button>
-</header>
+    function updateStats() {
+        document.getElementById('totalDalals').innerText = listData.length + ' জন';
+        document.getElementById('priorityCount').innerText = listData.filter(x => x.category==='desher_sotru'||x.category==='probashi').length + ' জন';
+        const dCnt = {}, tCnt = {}, sel = document.getElementById('distFilter');
+        listData.forEach(x => {
+            dCnt[x.district] = (dCnt[x.district]||0) + 1;
+            tCnt[x.thana] = (tCnt[x.thana]||0) + 1;
+        });
+        let md='', mv=0, mt='', mtv=0;
+        for(let k in dCnt){
+            if(dCnt[k]>mv){mv=dCnt[k]; md=k;}
+            let o = document.createElement('option'); o.value=k; o.innerText=k+' জেলা'; sel.appendChild(o);
+        }
+        for(let k in tCnt){ if(tCnt[k]>mtv){mtv=tCnt[k]; mt=k;} }
+        if(md) document.getElementById('topDistrict').innerText = md + ' (' + mv + ' জন)';
+        if(mt) document.getElementById('topThana').innerText = mt + ' (' + mtv + ' জন)';
+    }
 
-<div class="hero">
-    <h1>দেশ ও সাধারণ মানুষের বিপক্ষে দালালির মুখোশ উন্মোচন</h1>
-    <p>যারা ব্যক্তিগত স্বার্থে দেশের ক্ষতি করে, প্রবাসীদের কষ্টার্জিত অর্থ আত্মসাৎ করে কিংবা সাধারণ মানুষের জায়গা-জমি দখল ও দালালি করে—তাদের এলাকাভিত্তিক তালিকা।</p>
-</div>
+    function setCat(c, el) {
+        activeCat = c;
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        el.classList.add('active');
+        renderList();
+    }
 
-<div class="container">
-    <div class="stats">
-        <div class="stat-card"><h4>মোট চিহ্নিত দালাল</h4><p id="totalDalals">০ জন</p></div>
-        <div class="stat-card" style="border-top-color:var(--red);"><h4>সবচেয়ে বেশি দালাল (জেলা)</h4><p id="topDistrict">তথ্য নেই</p></div>
-        <div class="stat-card" style="border-top-color:var(--blue);"><h4>সবচেয়ে বেশি দালাল (থানা)</h4><p id="topThana">তথ্য নেই</p></div>
-        <div class="stat-card" style="border-top-color:var(--green);"><h4>দেশের ও প্রবাসীদের শত্রু</h4><p id="priorityCount">০ জন</p></div>
-    </div>
-
-    <div class="filter-box">
-        <div class="tabs">
-            <button type="button" class="tab active" onclick="setCat('all', this)">সকল দালাল</button>
-            <button type="button" class="tab" onclick="setCat('desher_sotru', this)">🚨 দেশের ও সার্বভৌমত্বের শত্রু</button>
-            <button type="button" class="tab" onclick="setCat('probashi', this)">✈️ প্রবাসীদের দালাল</button>
-            <button type="button" class="tab" onclick="setCat('jomi', this)">🏞️ জায়গা-জমি ও ভূমি দালাল</button>
-            <button type="button" class="tab" onclick="setCat('elakar_sotru', this)">🏘️ এলাকার শত্রু ও স্থানীয় দালাল</button>
-        </div>
-        <div class="search-row">
-            <input type="text" id="searchInput" onkeyup="renderList()" placeholder="দালালের নাম, থানা, গ্রাম, মহল্লা বা বংশ লিখে খুঁজুন...">
-            <select id="distFilter" onchange="renderList()"><option value="">সকল জেলা (ফিল্টার)</option></select>
-        </div>
-    </div>
-
-    <div class="grid" id="dalalList"><p style="color:#94a3b8;">তথ্য লোড হচ্ছে...</p></div>
-</div>
-
-<div class="modal" id="reportModal">
-    <div class="modal-box">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-            <h2>নতুন দালাল সম্পর্কে অভিযোগ</h2>
-            <button type="button" onclick="document.getElementById('reportModal').style.display='none'" style="background:none; border:none; color:#fff; font-size:1.8rem; cursor:pointer;">&times;</button>
-        </div>
-        <div class="priv-note">🔒 <strong>১০০% গোপনীয়তা:</strong> অভিযোগকারীর নাম ও ঠিকানা ওয়েবসাইটে কখনোই প্রকাশ করা হবে না।</div>
-        <form id="cForm">
-            <div class="sec-title">১. অভিযোগকারীর তথ্য (সম্পূর্ণ গোপন থাকবে)</div>
-            <div class="f-grid">
-                <div class="f-grp"><label>আপনার নাম *</label><input type="text" id="c_name" required></div>
-                <div class="f-grp"><label>আপনার জেলা *</label><input type="text" id="c_district" required></div>
-                <div class="f-grp"><label>আপনার থানা *</label><input type="text" id="c_thana" required></div>
-                <div class="f-grp"><label>আপনার গ্রাম *</label><input type="text" id="c_village" required></div>
+    function renderList() {
+        const q = document.getElementById('searchInput').value.toLowerCase();
+        const df = document.getElementById('distFilter').value;
+        const box = document.getElementById('dalalList');
+        const res = listData.filter(x => (activeCat==='all'||x.category===activeCat) && (df===''||x.district===df) && (x.name+x.district+x.thana+(x.village||'')+(x.moholla||'')+(x.bongsho||'')).toLowerCase().includes(q));
+        if(res.length === 0) {
+            box.innerHTML = '<p style="color:#94a3b8; grid-column:1/-1; text-align:center; padding:2rem; background:var(--card); border-radius:10px;">এই মুহূর্তে কোনো অনুমোদিত দালালের তথ্য নেই। নতুন অভিযোগ জমা দিতে উপরের <strong>"+ গোপন অভিযোগ জমা দিন"</strong> বাটনে ক্লিক করুন।</p>';
+            return;
+        }
+        box.innerHTML = res.map(x => `
+            <div class="dalal-card ${x.category==='desher_sotru'?'p-desh':x.category==='probashi'?'p-probashi':''}">
+                <div class="card-top">
+                    <img src="${x.image_url||'https://placeholder.com'}" class="dalal-img">
+                    <div>
+                        <span class="badge b-${x.category}">${catMap[x.category]||x.category}</span>
+                        <h3>${x.name}</h3>
+                        <span class="count-badge">অভিযোগ সংখ্যা: ${x.complaint_count} জন</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p><strong>বংশ:</strong> ${x.bongsho||'উল্লেখ নেই'}</p>
+                    <p><strong>জেলা ও থানা:</strong> ${x.district} (${x.thana})</p>
+                    <p><strong>গ্রাম ও মহল্লা:</strong> ${x.village||'-'}, ${x.moholla||'-'}</p>
+                </div>
+                <div class="card-foot">
+                    <span style="font-size:0.75rem; color:#94a3b8;">যাচাইকৃত</span>
+                    <button type="button" class="btn-det" onclick="openDet('${x.id}')">বিস্তারিত বিবরণ</button>
+                </div>
             </div>
-            <div class="sec-title">২. দালালের তথ্য (পাবলিক লিস্টে দেখাবে)</div>
-            <div class="f-grid">
-                <div class="f-grp"><label>দালালের নাম *</label><input type="text" id="d_name" required></div>
+        `).join('');
+    }
+
+    function openDet(id) {
+        const x = listData.find(i => i.id === id);
+        if(!x) return;
+        document.getElementById('detTitle').innerText = x.name;
+        document.getElementById('detContent').innerHTML = `
+            <p><strong>ক্যাটাগরি:</strong> ${catMap[x.category]||x.category}</p>
+            <p><strong>বংশ:</strong> ${x.bongsho||'উল্লেখ নেই'}</p>
+            <p><strong>পূর্ণ ঠিকানা:</strong> গ্রাম: ${x.village||'-'}, মহল্লা: ${x.moholla||'-'}, থানা: ${x.thana}, জেলা: ${x.district}</p>
+            <p><strong>মোট অভিযোগ:</strong> ${x.complaint_count} জন</p>
+            <p style="margin-top:10px; color:#6ee7b7; font-size:0.85rem;">🔒 অভিযোগকারীর পরিচয় গোপন রাখা হয়েছে।</p>
+        `;
+        document.getElementById('detModal').style.display = 'block';
+    }
+
+    document.getElementById('cForm').onsubmit = async function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('subBtn');
+        btn.disabled = true; btn.innerText = 'জমা হচ্ছে...';
+        try {
+            let pUrl = null;
+            const fi = document.getElementById('d_photo');
+            if(fi.files && fi.files.length > 0) {
+                const f = fi.files.item(0);
+                const fn = Date.now() + '_' + Math.random().toString(36).substring(7);
+                const ur = await fetch(SB_URL + '/storage/v1/object/dalal-photos/' + fn, {
+                    method:'POST', headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':f.type}, body:f
+                });
+                if(ur.ok) pUrl = SB_URL + '/storage/v1/object/public/dalal-photos/' + fn;
+            }
+            const cat = document.getElementById('d_category').value;
+            const dr = await fetch(SB_URL + '/rest/v1/dalals', {
+                method:'POST',
+                headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+                body: JSON.stringify({
+                    name: document.getElementById('d_name').value.trim(),
+                    bongsho: document.getElementById('d_bongsho').value.trim(),
+                    district: document.getElementById('d_district').value.trim(),
+                    thana: document.getElementById('d_thana').value.trim(),
+                    village: document.getElementById('d_village').value.trim(),
+                    moholla: document.getElementById('d_moholla').value.trim(),
+                    category: cat, image_url: pUrl, is_approved: false
+                })
+            });
+            const dArr = await dr.json();
+            const firstDalal = Array.isArray(dArr) ? dArr.at(0) : dArr;
+            if(!dr.ok || !firstDalal || !firstDalal.id) throw new Error('দালালের তথ্য সেভ হয়নি');
+
+            const cr = await fetch(SB_URL + '/rest/v1/complaints', {
+                method:'POST',
+                headers:{'apikey':SB_KEY,'Authorization':'Bearer '+SB_KEY,'Content-Type':'application/json'},
+                body: JSON.stringify({
+                    dalal_id: firstDalal.id,
+                    complainant_name: document.getElementById('c_name').value.trim(),
+                    complainant_district: document.getElementById('c_district').value.trim(),
+                    complainant_thana: document.getElementById('c_thana').value.trim(),
+                    complainant_village: document.getElementById('c_village').value.trim(),
+                    dalali_type: cat, description: document.getElementById('d_desc').value.trim()
+                })
+            });
+            if(!cr.ok) throw new Error('অভিযোগ সেভ হয়নি');
+            alert('ধন্যবাদ! আপনার অভিযোগটি গোপনীয়তার সাথে জমা হয়েছে। অ্যাডমিন যাচাইয়ের পর এটি তালিকায় যুক্ত হবে।');
+            document.getElementById('cForm').reset();
+            document.getElementById('reportModal').style.display = 'none';
+        } catch(err) {
+            alert('সমস্যা হয়েছে: ' + err.message);
+        } finally {
+            btn.disabled = false; btn.innerText = 'গোপন অভিযোগ জমা দিন';
+        }
+    };
+    init();
+</script>
+</body>
+</html>
