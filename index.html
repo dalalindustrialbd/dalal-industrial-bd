@@ -6,7 +6,6 @@
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="no-referrer">
     <title>Dalal Industrial Limited BD | দালালদের তালিকা ও জনসচেতনতা</title>
-    <script src="https://jsdelivr.net"></script>
     <style>
         :root {
             --bg: #0b0f19;
@@ -116,7 +115,7 @@
 
 <header>
     <div class="logo">Dalal Industrial <span>Limited BD</span></div>
-    <button type="button" class="btn-report" onclick="openModal()">+ গোপন অভিযোগ জমা দিন</button>
+    <button type="button" class="btn-report" id="openFormBtn">+ গোপন অভিযোগ জমা দিন</button>
 </header>
 
 <div class="container">
@@ -156,14 +155,14 @@
     <div class="modal-content">
         <div style="display:flex; justify-content:space-between; align-items:center;">
             <h2>নতুন দালাল সম্পর্কে অভিযোগ</h2>
-            <button type="button" onclick="closeModal()" style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
+            <button type="button" id="closeFormBtn" style="background:none; border:none; color:#fff; font-size:1.5rem; cursor:pointer;">&times;</button>
         </div>
 
         <div class="privacy-note">
             🔒 <strong>১০০% গোপনীয়তার নিশ্চয়তা:</strong> অভিযোগকারীর নাম ও ঠিকানা ওয়েবসাইটে কখনোই প্রকাশ করা হবে না। এটি শুধুমাত্র যাচাইয়ের জন্য গোপন ডেটাবেসে সুরক্ষিত থাকবে।
         </div>
 
-        <form id="complaintForm" onsubmit="submitComplaint(event)">
+        <form id="complaintForm">
             <div class="form-section-title">১. অভিযোগকারীর তথ্য (সম্পূর্ণ গোপন থাকবে)</div>
             <div class="form-grid">
                 <div class="form-group">
@@ -196,3 +195,7 @@
                 </div>
                 <div class="form-group">
                     <label>দালালের জেলা *</label>
+                    <input type="text" id="d_district" required placeholder="জেলার নাম">
+                </div>
+                <div class="form-group">
+                    <label>দালালের থানা *</label>
